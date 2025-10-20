@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stepowoy Enterprises - Contractor Performance Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">SBE</div>
+                <div class="company-name">Stepowoy Enterprises</div>
+            </div>
+            <div class="header-right">
+                <div class="timestamp">Updated Hourly (demo)</div>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters">
+        <div class="filter-group">
+            <label>Contractor:</label>
+            <select disabled>
+                <option>Stepowoy</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Time Range:</label>
+            <select id="timeRange" onchange="updateDashboard()">
+                <option value="mtd">MTD</option>
+                <option value="qtd">QTD</option>
+                <option value="ytd">YTD</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Rep:</label>
+            <select id="repFilter" onchange="updateDashboard()">
+                <option value="all">All</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-section">
+        <div class="kpi-card" data-tooltip="Total closed/won revenue month-to-date vs. goal">
+            <div class="kpi-header">
+                <h3>Revenue (MTD)</h3>
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="kpi-value">$847,250</div>
+            <div class="kpi-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 84.7%"></div>
+                </div>
+                <span class="progress-text">84.7% of $1M goal</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" data-tooltip="Closed/won opportunities ÷ qualified opportunities">
+            <div class="kpi-header">
+                <h3>Close Rate (%)</h3>
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="kpi-value">64.6%</div>
+            <div class="kpi-benchmark">
+                <span class="benchmark-label">vs. 58.1% peer avg</span>
+                <span class="benchmark-indicator positive">+6.5%</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" data-tooltip="Average revenue per closed job">
+            <div class="kpi-header">
+                <h3>Average Ticket ($)</h3>
+                <i class="fas fa-receipt"></i>
+            </div>
+            <div class="kpi-value">$787</div>
+            <div class="kpi-target">
+                <span class="target-label">Target: $650-$900</span>
+                <span class="target-status in-range">✓ In Range</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" data-tooltip="Unique users in training/coaching last 30 days">
+            <div class="kpi-header">
+                <h3>Active Learners</h3>
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="kpi-value">47</div>
+            <div class="kpi-engagement">
+                <span class="engagement-label">Engagement Index</span>
+                <div class="engagement-bar">
+                    <div class="engagement-fill" style="width: 78%"></div>
+                </div>
+                <span class="engagement-score">78/100</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Panels -->
+    <div class="dashboard-grid">
+        <!-- Panel 1: Job Performance -->
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Job Performance</h3>
+                <a href="drill-in-performance.html" class="drill-link">View details →</a>
+            </div>
+            <div class="panel-content">
+                <div class="performance-chart">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <div class="rep-tiles">
+                    <div class="rep-tile">
+                        <div class="rep-name">Ava</div>
+                        <div class="rep-stats">
+                            <span>672 jobs</span>
+                            <span>68% close</span>
+                            <span>$720 avg</span>
+                            <span>$483,840</span>
+                        </div>
+                    </div>
+                    <div class="rep-tile">
+                        <div class="rep-name">Noah</div>
+                        <div class="rep-stats">
+                            <span>615 jobs</span>
+                            <span>47% close</span>
+                            <span>$650 avg</span>
+                            <span>$399,750</span>
+                        </div>
+                    </div>
+                    <div class="rep-tile">
+                        <div class="rep-name">Marcus</div>
+                        <div class="rep-stats">
+                            <span>518 jobs</span>
+                            <span>61% close</span>
+                            <span>$510 avg</span>
+                            <span>$264,180</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 2: Training Attendance Scorecard -->
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Training Attendance</h3>
+                <a href="drill-in-training.html" class="drill-link">View details →</a>
+            </div>
+            <div class="panel-content">
+                <div class="scorecard-table">
+                    <div class="table-header">
+                        <div class="dept-column">Department</div>
+                        <div class="score-column">Last Quarter Dept Avg</div>
+                        <div class="score-column">Year to Date Dept Avg</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="dept-cell">Customer Service</div>
+                        <div class="score-cell yellow">4.1 / 6</div>
+                        <div class="score-cell green">10.2 / 12</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="dept-cell">Dispatch</div>
+                        <div class="score-cell red">1.8 / 6</div>
+                        <div class="score-cell yellow">9.5 / 12</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="dept-cell">Plumbers</div>
+                        <div class="score-cell green">5.5 / 6</div>
+                        <div class="score-cell yellow">8.3 / 12</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="dept-cell">Management</div>
+                        <div class="score-cell green">3.0 / 3</div>
+                        <div class="score-cell green">5.0 / 6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <!-- Panel 3: Training Performance -->
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Training Performance</h3>
+            </div>
+            <div class="panel-content">
+                <div class="training-gauges">
+                    <div class="gauge">
+                        <div class="gauge-value">94%</div>
+                        <div class="gauge-label">Quiz Pass</div>
+                    </div>
+                    <div class="gauge">
+                        <div class="gauge-value">87%</div>
+                        <div class="gauge-label">Certification</div>
+                    </div>
+                    <div class="gauge">
+                        <div class="gauge-value">4.2</div>
+                        <div class="gauge-label">Rating</div>
+                    </div>
+                </div>
+                <div class="training-correlation">
+                    <canvas id="correlationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 4: Stack Ranking by Tech -->
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Stack Ranking by Tech</h3>
+                <div class="header-controls">
+                    <div class="stack-rank-indicator">
+                        <div>Stack Rank</div>
+                        <div>by Avg Ticket</div>
+                    </div>
+                    <span class="period-label">Period [YtD]</span>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div class="compact-ranking-list">
+                    <!-- Ava (1st - Highest Avg Ticket: $720) -->
+                    <div class="ranking-item" data-employee="ava">
+                        <div class="main-row">
+                            <div class="rank-info">
+                                <div class="ranking-number">1</div>
+                                <div class="employee-name">Ava</div>
+                                <div class="employee-level snr">Snr</div>
+                            </div>
+                            <div class="key-metrics">
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Avg$</div>
+                                    <span class="metric-value ticket">$720</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Rev$</div>
+                                    <span class="metric-value revenue">$483K</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Cls%</div>
+                                    <span class="metric-value close-rate">68%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-item">
+                                <span class="status-label">Training</span>
+                                <span class="status-badge green">Green</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Attendance</span>
+                                <span class="status-badge green">Green</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Liam (2nd - Avg Ticket: $695) -->
+                    <div class="ranking-item" data-employee="liam">
+                        <div class="main-row">
+                            <div class="rank-info">
+                                <div class="ranking-number">2</div>
+                                <div class="employee-name">Liam</div>
+                                <div class="employee-level mid">Mid</div>
+                            </div>
+                            <div class="key-metrics">
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Avg$</div>
+                                    <span class="metric-value ticket">$695</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Rev$</div>
+                                    <span class="metric-value revenue">$496K</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Cls%</div>
+                                    <span class="metric-value close-rate">64%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-item">
+                                <span class="status-label">Training</span>
+                                <span class="status-badge green">Green</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Attendance</span>
+                                <span class="status-badge green">Green</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sophie (3rd - Avg Ticket: $680) -->
+                    <div class="ranking-item" data-employee="sophie">
+                        <div class="main-row">
+                            <div class="rank-info">
+                                <div class="ranking-number">3</div>
+                                <div class="employee-name">Sophie</div>
+                                <div class="employee-level jr">Jr</div>
+                            </div>
+                            <div class="key-metrics">
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Avg$</div>
+                                    <span class="metric-value ticket">$680</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Rev$</div>
+                                    <span class="metric-value revenue">$141K</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Cls%</div>
+                                    <span class="metric-value close-rate">50%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-item">
+                                <span class="status-label">Training</span>
+                                <span class="status-badge yellow">Yellow</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Attendance</span>
+                                <span class="status-badge green">Green</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Noah (4th - Avg Ticket: $650) -->
+                    <div class="ranking-item" data-employee="noah">
+                        <div class="main-row">
+                            <div class="rank-info">
+                                <div class="ranking-number">4</div>
+                                <div class="employee-name">Noah</div>
+                                <div class="employee-level mid">Mid</div>
+                            </div>
+                            <div class="key-metrics">
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Avg$</div>
+                                    <span class="metric-value ticket">$650</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Rev$</div>
+                                    <span class="metric-value revenue">$399K</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Cls%</div>
+                                    <span class="metric-value close-rate">47%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-item">
+                                <span class="status-label">Training</span>
+                                <span class="status-badge yellow">Yellow</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Attendance</span>
+                                <span class="status-badge green">Green</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marcus (5th - Lowest Avg Ticket: $510) -->
+                    <div class="ranking-item" data-employee="marcus">
+                        <div class="main-row">
+                            <div class="rank-info">
+                                <div class="ranking-number">5</div>
+                                <div class="employee-name">Marcus</div>
+                                <div class="employee-level snr">Snr</div>
+                            </div>
+                            <div class="key-metrics">
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Avg$</div>
+                                    <span class="metric-value ticket">$510</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Rev$</div>
+                                    <span class="metric-value revenue">$264K</span>
+                                </div>
+                                <div class="metric-with-label">
+                                    <div class="metric-label">Cls%</div>
+                                    <span class="metric-value close-rate">61%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-row">
+                            <div class="status-item">
+                                <span class="status-label">Training</span>
+                                <span class="status-badge red">Red</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Attendance</span>
+                                <span class="status-badge yellow">Yellow</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel 5: Financial Validation -->
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Financial Validation</h3>
+                <a href="drill-in-financial.html" class="drill-link">View details →</a>
+            </div>
+            <div class="panel-content">
+                <div class="financial-comparison">
+                    <div class="comparison-row">
+                        <span class="label">CRM Total:</span>
+                        <span class="value">$847,250</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span class="label">QuickBooks:</span>
+                        <span class="value">$841,180</span>
+                    </div>
+                    <div class="comparison-row variance">
+                        <span class="label">Variance:</span>
+                        <span class="value">-0.72%</span>
+                    </div>
+                </div>
+                <div class="validation-status">
+                    <div class="status-indicator in-sync">
+                        <i class="fas fa-check-circle"></i>
+                        <span>In Sync</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Executive Caption -->
+    <footer class="executive-caption">
+        <p>With SBE's integrated performance insight, Stepowoy leaders can finally see how training drives real results—from the classroom to the job site to the P&L.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Attendance Detail - Stepowoy Enterprises</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .drill-in-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .drill-in-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .controls-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .control-group label {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .control-group select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        /* Training Grid - Two Column Layout */
+        .training-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Summary Cards Column */
+        .summary-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            height: 100%;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .summary-card.clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card.clickable:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .card-content {
+            flex: 1;
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1;
+        }
+        
+        .card-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        /* Department Overview Column */
+        .department-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-header h3 {
+            margin: 0;
+            color: #1e293b;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .panel-content {
+            padding: 1.5rem;
+        }
+        
+        /* Department Cards */
+        .department-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .dept-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .dept-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .dept-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .dept-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        }
+        
+        .dept-info h4 {
+            margin: 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .employee-count {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .dept-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .metric-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .metric-value.green {
+            color: #10b981;
+        }
+        
+        .metric-value.orange {
+            color: #f59e0b;
+        }
+        
+        .metric-progress {
+            margin-top: 0.5rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill.green {
+            background: #10b981;
+        }
+        
+        .progress-fill.orange {
+            background: #f59e0b;
+        }
+        
+        /* Full Width Employee Section */
+        .employee-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .panel-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .employee-table-container {
+            overflow-x: auto;
+        }
+        
+        .employee-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .employee-table th,
+        .employee-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .employee-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .employee-table td {
+            color: #1e293b;
+        }
+        
+        .btn-primary {
+            background: #4f46e5;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #1e293b;
+        }
+        
+        .close {
+            color: #64748b;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close:hover {
+            color: #1e293b;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .employee-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        .classes-completed h4 {
+            margin: 0 0 1rem 0;
+            color: #1e293b;
+        }
+        
+        .classes-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .class-item {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .employees-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .employee-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .employee-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .employee-dept {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .attendance-breakdown, .average-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .breakdown-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .breakdown-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .breakdown-details {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .controls-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .training-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .department-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .employee-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="drill-in-header">
+        <div class="drill-in-content">
+            <button class="back-button" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <h1>Training Attendance Detail</h1>
+            <p>Which departments and employees are meeting training requirements and where can we improve?</p>
+        </div>
+    </div>
+    
+    <div class="drill-in-content">
+        <!-- Controls -->
+        <div class="controls-section">
+            <div class="control-group">
+                <label for="timePeriod">Time Period</label>
+                <select id="timePeriod" onchange="updateFilters()">
+                    <option value="lastQuarter">Last Quarter</option>
+                    <option value="yearToDate">Year to Date</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="department">Department</label>
+                <select id="department" onchange="updateFilters()">
+                    <option value="all">All Departments</option>
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Dispatch">Dispatch</option>
+                    <option value="Plumbers">Plumbers</option>
+                    <option value="Management">Management</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Training Grid - Two Column Layout -->
+        <div class="training-grid">
+            <!-- Summary Cards Column -->
+            <div class="summary-section">
+                <div class="summary-card clickable" onclick="showEmployeesModal()">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value" id="totalEmployees">20</div>
+                        <div class="card-label">Total Employees</div>
+                    </div>
+                </div>
+                <div class="summary-card clickable" onclick="showClassesModal()">
+                    <div class="card-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value" id="totalClasses">6</div>
+                        <div class="card-label">Classes Held</div>
+                    </div>
+                </div>
+                <div class="summary-card clickable" onclick="showAttendanceModal()">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value" id="attendanceRate">68%</div>
+                        <div class="card-label">Overall Attendance</div>
+                    </div>
+                </div>
+                <div class="summary-card clickable" onclick="showAverageModal()">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value" id="avgPerEmployee">4.1</div>
+                        <div class="card-label">Avg per Employee</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Department Overview Column -->
+            <div class="department-section">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>Department Overview</h3>
+                    </div>
+                    <div class="panel-content">
+                        <div class="department-cards">
+                            <div class="dept-card" data-dept="Customer Service">
+                                <div class="dept-header">
+                                    <div class="dept-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="dept-info">
+                                        <h4>Customer Service</h4>
+                                        <div class="employee-count">8 employees</div>
+                                    </div>
+                                </div>
+                                <div class="dept-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-label">Last Quarter</div>
+                                        <div class="metric-value green">4.1 / 6</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill green" style="width: 68%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">Year to Date</div>
+                                        <div class="metric-value green">10.2 / 12</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill green" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="dept-card" data-dept="Dispatch">
+                                <div class="dept-header">
+                                    <div class="dept-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div class="dept-info">
+                                        <h4>Dispatch</h4>
+                                        <div class="employee-count">5 employees</div>
+                                    </div>
+                                </div>
+                                <div class="dept-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-label">Last Quarter</div>
+                                        <div class="metric-value orange">1.8 / 6</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill orange" style="width: 30%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">Year to Date</div>
+                                        <div class="metric-value orange">9.5 / 12</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill orange" style="width: 79%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="dept-card" data-dept="Plumbers">
+                                <div class="dept-header">
+                                    <div class="dept-icon">
+                                        <i class="fas fa-wrench"></i>
+                                    </div>
+                                    <div class="dept-info">
+                                        <h4>Plumbers</h4>
+                                        <div class="employee-count">4 employees</div>
+                                    </div>
+                                </div>
+                                <div class="dept-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-label">Last Quarter</div>
+                                        <div class="metric-value green">5.5 / 6</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill green" style="width: 92%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">Year to Date</div>
+                                        <div class="metric-value orange">8.3 / 12</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill orange" style="width: 69%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="dept-card" data-dept="Management">
+                                <div class="dept-header">
+                                    <div class="dept-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="dept-info">
+                                        <h4>Management</h4>
+                                        <div class="employee-count">3 employees</div>
+                                    </div>
+                                </div>
+                                <div class="dept-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-label">Last Quarter</div>
+                                        <div class="metric-value green">3.0 / 3</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill green" style="width: 100%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">Year to Date</div>
+                                        <div class="metric-value green">5.0 / 6</div>
+                                        <div class="metric-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill green" style="width: 83%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Employee Training Details - Full Width -->
+        <div class="employee-section">
+            <div class="panel-header">
+                <h3>Employee Training Details</h3>
+                <div class="panel-actions">
+                    <button class="btn-secondary" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div class="employee-table-container">
+                    <table class="employee-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Department</th>
+                                <th>Last Quarter</th>
+                                <th>Year to Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody">
+                            <!-- Employee data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Detail Modal -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalEmployeeName">Employee Details</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="employee-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="modalLastQuarter">0</div>
+                        <div class="stat-label">Last Quarter</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="modalYearToDate">0</div>
+                        <div class="stat-label">Year to Date</div>
+                    </div>
+                </div>
+                <div class="classes-completed">
+                    <h4>Classes Completed</h4>
+                    <div id="modalClassesList" class="classes-list">
+                        <!-- Classes will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employees Modal -->
+    <div id="employeesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>All Employees</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="employeesList" class="employees-list">
+                    <!-- Employees will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Classes Modal -->
+    <div id="classesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Training Classes</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="classesList" class="classes-list">
+                    <!-- Classes will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Modal -->
+    <div id="attendanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Attendance Breakdown</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="attendanceBreakdown" class="attendance-breakdown">
+                    <!-- Attendance breakdown will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Average Modal -->
+    <div id="averageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Average Calculation</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="averageBreakdown" class="average-breakdown">
+                    <!-- Average breakdown will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Training attendance data (shared with main dashboard)
+        const trainingAttendanceData = {
+            departments: {
+                'Customer Service': {
+                    lastQuarter: { attended: 4.1, total: 6, employees: 8 },
+                    yearToDate: { attended: 10.2, total: 12, employees: 8 },
+                    employees: [
+                        { name: 'Sarah Johnson', lastQuarter: 4, yearToDate: 10, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge'] },
+                        { name: 'Mike Chen', lastQuarter: 5, yearToDate: 11, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge', 'Conflict Resolution'] },
+                        { name: 'Emily Davis', lastQuarter: 3, yearToDate: 9, classes: ['Safety Training', 'Customer Service', 'Communication'] },
+                        { name: 'David Wilson', lastQuarter: 4, yearToDate: 10, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge'] },
+                        { name: 'Lisa Brown', lastQuarter: 5, yearToDate: 12, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge', 'Conflict Resolution', 'Advanced Techniques'] },
+                        { name: 'Tom Anderson', lastQuarter: 4, yearToDate: 10, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge'] },
+                        { name: 'Rachel Green', lastQuarter: 4, yearToDate: 10, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge'] },
+                        { name: 'Chris Taylor', lastQuarter: 4, yearToDate: 10, classes: ['Safety Training', 'Customer Service', 'Communication', 'Product Knowledge'] }
+                    ]
+                },
+                'Dispatch': {
+                    lastQuarter: { attended: 1.8, total: 6, employees: 5 },
+                    yearToDate: { attended: 9.5, total: 12, employees: 5 },
+                    employees: [
+                        { name: 'Alex Rodriguez', lastQuarter: 2, yearToDate: 10, classes: ['Dispatch Systems', 'Emergency Procedures'] },
+                        { name: 'Maria Garcia', lastQuarter: 1, yearToDate: 8, classes: ['Dispatch Systems'] },
+                        { name: 'James Smith', lastQuarter: 2, yearToDate: 10, classes: ['Dispatch Systems', 'Emergency Procedures'] },
+                        { name: 'Jennifer Lee', lastQuarter: 2, yearToDate: 10, classes: ['Dispatch Systems', 'Emergency Procedures'] },
+                        { name: 'Robert Kim', lastQuarter: 2, yearToDate: 10, classes: ['Dispatch Systems', 'Emergency Procedures'] }
+                    ]
+                },
+                'Plumbers': {
+                    lastQuarter: { attended: 5.5, total: 6, employees: 4 },
+                    yearToDate: { attended: 8.3, total: 12, employees: 4 },
+                    employees: [
+                        { name: 'Pablo Escobar', lastQuarter: 6, yearToDate: 12, classes: ['Plumbing Basics', 'Advanced Techniques', 'Safety Protocols', 'Code Compliance', 'Emergency Repairs', 'Customer Service'] },
+                        { name: 'Nick Fergis', lastQuarter: 5, yearToDate: 10, classes: ['Plumbing Basics', 'Advanced Techniques', 'Safety Protocols', 'Code Compliance', 'Emergency Repairs'] },
+                        { name: 'Bob Carter', lastQuarter: 5, yearToDate: 10, classes: ['Plumbing Basics', 'Advanced Techniques', 'Safety Protocols', 'Code Compliance', 'Emergency Repairs'] },
+                        { name: 'Miguel Herhandez', lastQuarter: 6, yearToDate: 12, classes: ['Plumbing Basics', 'Advanced Techniques', 'Safety Protocols', 'Code Compliance', 'Emergency Repairs', 'Customer Service'] }
+                    ]
+                },
+                'Management': {
+                    lastQuarter: { attended: 3.0, total: 3, employees: 3 },
+                    yearToDate: { attended: 5.0, total: 6, employees: 3 },
+                    employees: [
+                        { name: 'John Manager', lastQuarter: 3, yearToDate: 6, classes: ['Leadership', 'Team Management', 'Strategic Planning', 'Performance Management', 'Budget Planning', 'Communication'] },
+                        { name: 'Jane Director', lastQuarter: 3, yearToDate: 6, classes: ['Leadership', 'Team Management', 'Strategic Planning', 'Performance Management', 'Budget Planning', 'Communication'] },
+                        { name: 'Mark Supervisor', lastQuarter: 3, yearToDate: 6, classes: ['Leadership', 'Team Management', 'Strategic Planning', 'Performance Management', 'Budget Planning', 'Communication'] }
+                    ]
+                }
+            }
+        };
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateEmployeeTable();
+            updateSummaryCards();
+            updateDepartmentCards();
+        });
+
+        // Update filters
+        function updateFilters() {
+            updateEmployeeTable();
+            updateSummaryCards();
+            updateDepartmentCards();
+        }
+
+        // Update employee table
+        function updateEmployeeTable() {
+            const timePeriod = document.getElementById('timePeriod').value;
+            const department = document.getElementById('department').value;
+            const tbody = document.getElementById('employeeTableBody');
+            
+            tbody.innerHTML = '';
+            
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                if (department !== 'all' && department !== deptName) return;
+                
+                const dept = trainingAttendanceData.departments[deptName];
+                dept.employees.forEach(employee => {
+                    const row = document.createElement('tr');
+                    
+                    // Highlight the selected time period column
+                    const lastQuarterCell = timePeriod === 'lastQuarter' ? 
+                        `<td style="background-color: #e0e7ff; font-weight: 600;">${employee.lastQuarter}</td>` : 
+                        `<td>${employee.lastQuarter}</td>`;
+                    
+                    const yearToDateCell = timePeriod === 'yearToDate' ? 
+                        `<td style="background-color: #e0e7ff; font-weight: 600;">${employee.yearToDate}</td>` : 
+                        `<td>${employee.yearToDate}</td>`;
+                    
+                    row.innerHTML = `
+                        <td>${employee.name}</td>
+                        <td>${deptName}</td>
+                        ${lastQuarterCell}
+                        ${yearToDateCell}
+                        <td><button class="btn-primary" onclick="showEmployeeDetails('${employee.name}', '${deptName}')">View Details</button></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            });
+        }
+
+        // Show employee details modal
+        function showEmployeeDetails(employeeName, department) {
+            const employee = trainingAttendanceData.departments[department].employees.find(emp => emp.name === employeeName);
+            
+            document.getElementById('modalEmployeeName').textContent = employeeName;
+            document.getElementById('modalLastQuarter').textContent = employee.lastQuarter;
+            document.getElementById('modalYearToDate').textContent = employee.yearToDate;
+            
+            const classesList = document.getElementById('modalClassesList');
+            classesList.innerHTML = '';
+            employee.classes.forEach(className => {
+                const classItem = document.createElement('div');
+                classItem.className = 'class-item';
+                classItem.textContent = className;
+                classesList.appendChild(classItem);
+            });
+            
+            document.getElementById('employeeModal').style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            // Close all modals
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // Export data
+        function exportData() {
+            alert('Export functionality would be implemented here');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Update summary cards based on time period
+        function updateSummaryCards() {
+            const timePeriod = document.getElementById('timePeriod').value;
+            let totalEmployees = 0;
+            let totalClasses = 0;
+            let totalAttendance = 0;
+            let totalSessions = 0;
+            
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                const dept = trainingAttendanceData.departments[deptName];
+                totalEmployees += dept.employees.length;
+                
+                if (timePeriod === 'lastQuarter') {
+                    totalClasses = 6; // Last quarter had 6 classes
+                    totalAttendance += dept.lastQuarter.attended * dept.employees.length;
+                    totalSessions = totalClasses * totalEmployees;
+                } else {
+                    totalClasses = 12; // Year to date has 12 classes
+                    totalAttendance += dept.yearToDate.attended * dept.employees.length;
+                    totalSessions = totalClasses * totalEmployees;
+                }
+            });
+            
+            const attendanceRate = totalSessions > 0 ? Math.round((totalAttendance / totalSessions) * 100) : 0;
+            const avgPerEmployee = totalEmployees > 0 ? (totalAttendance / totalEmployees).toFixed(1) : 0;
+            
+            document.getElementById('totalEmployees').textContent = totalEmployees;
+            document.getElementById('totalClasses').textContent = totalClasses;
+            document.getElementById('attendanceRate').textContent = attendanceRate + '%';
+            document.getElementById('avgPerEmployee').textContent = avgPerEmployee;
+        }
+        
+        // Update department cards based on time period
+        function updateDepartmentCards() {
+            const timePeriod = document.getElementById('timePeriod').value;
+            
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                const dept = trainingAttendanceData.departments[deptName];
+                const deptCard = document.querySelector(`[data-dept="${deptName}"]`);
+                
+                if (deptCard) {
+                    const lastQuarterMetric = deptCard.querySelector('.metric-item:first-child .metric-value');
+                    const yearToDateMetric = deptCard.querySelector('.metric-item:last-child .metric-value');
+                    const lastQuarterProgress = deptCard.querySelector('.metric-item:first-child .progress-fill');
+                    const yearToDateProgress = deptCard.querySelector('.metric-item:last-child .progress-fill');
+                    
+                    if (timePeriod === 'lastQuarter') {
+                        // Highlight last quarter data
+                        lastQuarterMetric.textContent = `${dept.lastQuarter.attended} / ${dept.lastQuarter.total}`;
+                        lastQuarterProgress.style.width = `${Math.round((dept.lastQuarter.attended / dept.lastQuarter.total) * 100)}%`;
+                        
+                        // Update year to date data
+                        yearToDateMetric.textContent = `${dept.yearToDate.attended} / ${dept.yearToDate.total}`;
+                        yearToDateProgress.style.width = `${Math.round((dept.yearToDate.attended / dept.yearToDate.total) * 100)}%`;
+                    } else {
+                        // Highlight year to date data
+                        lastQuarterMetric.textContent = `${dept.lastQuarter.attended} / ${dept.lastQuarter.total}`;
+                        lastQuarterProgress.style.width = `${Math.round((dept.lastQuarter.attended / dept.lastQuarter.total) * 100)}%`;
+                        
+                        yearToDateMetric.textContent = `${dept.yearToDate.attended} / ${dept.yearToDate.total}`;
+                        yearToDateProgress.style.width = `${Math.round((dept.yearToDate.attended / dept.yearToDate.total) * 100)}%`;
+                    }
+                }
+            });
+        }
+
+        // Show employees modal
+        function showEmployeesModal() {
+            const employeesList = document.getElementById('employeesList');
+            employeesList.innerHTML = '';
+            
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                const dept = trainingAttendanceData.departments[deptName];
+                dept.employees.forEach(employee => {
+                    const employeeItem = document.createElement('div');
+                    employeeItem.className = 'employee-item';
+                    employeeItem.innerHTML = `
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-dept">${deptName}</div>
+                    `;
+                    employeesList.appendChild(employeeItem);
+                });
+            });
+            
+            document.getElementById('employeesModal').style.display = 'block';
+        }
+        
+        // Show classes modal
+        function showClassesModal() {
+            const classesList = document.getElementById('classesList');
+            classesList.innerHTML = '';
+            
+            // Get all unique classes from all employees
+            const allClasses = new Set();
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                const dept = trainingAttendanceData.departments[deptName];
+                dept.employees.forEach(employee => {
+                    employee.classes.forEach(className => {
+                        allClasses.add(className);
+                    });
+                });
+            });
+            
+            allClasses.forEach(className => {
+                const classItem = document.createElement('div');
+                classItem.className = 'class-item';
+                classItem.textContent = className;
+                classesList.appendChild(classItem);
+            });
+            
+            document.getElementById('classesModal').style.display = 'block';
+        }
+        
+        // Show attendance modal
+        function showAttendanceModal() {
+            const attendanceBreakdown = document.getElementById('attendanceBreakdown');
+            const timePeriod = document.getElementById('timePeriod').value;
+            attendanceBreakdown.innerHTML = '';
+            
+            let totalAttendance = 0;
+            let totalSessions = 0;
+            let totalEmployees = 0;
+            
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                const dept = trainingAttendanceData.departments[deptName];
+                const deptEmployees = dept.employees.length;
+                totalEmployees += deptEmployees;
+                
+                let deptAttendance = 0;
+                let deptSessions = 0;
+                
+                if (timePeriod === 'lastQuarter') {
+                    deptAttendance = dept.lastQuarter.attended * deptEmployees;
+                    deptSessions = dept.lastQuarter.total * deptEmployees;
+                } else {
+                    deptAttendance = dept.yearToDate.attended * deptEmployees;
+                    deptSessions = dept.yearToDate.total * deptEmployees;
+                }
+                
+                totalAttendance += deptAttendance;
+                totalSessions += deptSessions;
+                
+                const breakdownItem = document.createElement('div');
+                breakdownItem.className = 'breakdown-item';
+                breakdownItem.innerHTML = `
+                    <div class="breakdown-title">${deptName}</div>
+                    <div class="breakdown-details">
+                        ${deptEmployees} employees × ${timePeriod === 'lastQuarter' ? dept.lastQuarter.attended : dept.yearToDate.attended} classes = ${deptAttendance} total attendance<br>
+                        ${deptEmployees} employees × ${timePeriod === 'lastQuarter' ? dept.lastQuarter.total : dept.yearToDate.total} classes = ${deptSessions} total sessions<br>
+                        Rate: ${Math.round((deptAttendance / deptSessions) * 100)}%
+                    </div>
+                `;
+                attendanceBreakdown.appendChild(breakdownItem);
+            });
+            
+            const totalItem = document.createElement('div');
+            totalItem.className = 'breakdown-item';
+            totalItem.style.background = '#e0e7ff';
+            totalItem.style.borderColor = '#3730a3';
+            totalItem.innerHTML = `
+                <div class="breakdown-title">Overall Total</div>
+                <div class="breakdown-details">
+                    ${totalAttendance} total attendance ÷ ${totalSessions} total sessions = ${Math.round((totalAttendance / totalSessions) * 100)}%
+                </div>
+            `;
+            attendanceBreakdown.appendChild(totalItem);
+            
+            document.getElementById('attendanceModal').style.display = 'block';
+        }
+        
+        // Show average modal
+        function showAverageModal() {
+            const averageBreakdown = document.getElementById('averageBreakdown');
+            const timePeriod = document.getElementById('timePeriod').value;
+            averageBreakdown.innerHTML = '';
+            
+            let totalAttendance = 0;
+            let totalEmployees = 0;
+            
+            Object.keys(trainingAttendanceData.departments).forEach(deptName => {
+                const dept = trainingAttendanceData.departments[deptName];
+                const deptEmployees = dept.employees.length;
+                totalEmployees += deptEmployees;
+                
+                let deptAttendance = 0;
+                if (timePeriod === 'lastQuarter') {
+                    deptAttendance = dept.lastQuarter.attended * deptEmployees;
+                } else {
+                    deptAttendance = dept.yearToDate.attended * deptEmployees;
+                }
+                
+                totalAttendance += deptAttendance;
+                
+                const breakdownItem = document.createElement('div');
+                breakdownItem.className = 'breakdown-item';
+                breakdownItem.innerHTML = `
+                    <div class="breakdown-title">${deptName}</div>
+                    <div class="breakdown-details">
+                        ${deptEmployees} employees × ${timePeriod === 'lastQuarter' ? dept.lastQuarter.attended : dept.yearToDate.attended} classes = ${deptAttendance} total attendance
+                    </div>
+                `;
+                averageBreakdown.appendChild(breakdownItem);
+            });
+            
+            const totalItem = document.createElement('div');
+            totalItem.className = 'breakdown-item';
+            totalItem.style.background = '#e0e7ff';
+            totalItem.style.borderColor = '#3730a3';
+            totalItem.innerHTML = `
+                <div class="breakdown-title">Average Calculation</div>
+                <div class="breakdown-details">
+                    ${totalAttendance} total attendance ÷ ${totalEmployees} employees = ${(totalAttendance / totalEmployees).toFixed(1)} classes per employee
+                </div>
+            `;
+            averageBreakdown.appendChild(totalItem);
+            
+            document.getElementById('averageModal').style.display = 'block';
+        }
+
+        // Go back to dashboard
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
