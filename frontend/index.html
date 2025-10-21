@@ -446,6 +446,10 @@
         <p>With SBE's integrated performance insight, Stepowoy leaders can finally see how training drives real results—from the classroom to the job site to the P&L.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Add a hidden Vue mount point (we’ll enable later when you add widgets) -->
+    <div id="app" style="display:none"></div>
+
+    <!-- Tell Vite to boot your app (loads CSS + your legacy JS) -->
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
